@@ -16,7 +16,7 @@
             <ColumnDefinition Width="140px" />
         </Grid.ColumnDefinitions>
 
-        <TextBox Grid.Row="0" Grid.Column="0" x:Name="txtPath" Text="PathToFile" />
+        <TextBox Grid.Row="0" Grid.Column="0" x:Name="txtPath" Text="C:\Users\Jamjar\Downloads\Merge.csv" />
         <Button Grid.Row="0" Grid.Column="1" x:Name="Update" Content="Update" Width="128" Height="48" Click="Update_Clicked" />
         <TextBox Grid.Row="1" Grid.ColumnSpan="2" x:Name="Output" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
     </Grid>

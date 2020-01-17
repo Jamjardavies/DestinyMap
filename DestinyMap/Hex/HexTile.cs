@@ -92,9 +92,12 @@ namespace DestinyMap.Hex
                     ImageUrl = csv.GetField(0)
                 };
 
-                int offset = 1; //id >= 2366 ? 1 : 0;
+                int merge = 2450;
+                //int offset = id >= merge ? 1 : 0;
+                int offset = 1;
 
-                tile.ForceDelete = false; //id >= 2366;
+                //tile.ForceDelete = id >= merge;
+                tile.ForceDelete = false;
 
                 // Import the wall.
                 string wall = csv.GetField(2);
@@ -125,7 +128,7 @@ namespace DestinyMap.Hex
 
                 return tile;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return null;
             }
@@ -145,7 +148,7 @@ namespace DestinyMap.Hex
         public string Link5 => Links[5];
         private string[] Links { get; } = new string[6];
 
-        public HexTileForMerge(HexTile tile)
+        public HexTileForMerge(HexTile tile, bool ourFormat = true)
         {
             ImageUrl = tile.ImageUrl;
             Center = tile.Symbol.ToString();
@@ -159,7 +162,7 @@ namespace DestinyMap.Hex
                     continue;
                 }
 
-                nums.Add(i);
+                nums.Add(ourFormat ? i : i + 1);
             }
 
             Holes = string.Join(",", nums);

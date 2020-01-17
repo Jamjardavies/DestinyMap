@@ -15,9 +15,10 @@ namespace DestinyMap
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string FileToRead = @"C:\Users\Jamjar\Downloads\CombinedStreamer-Vault Verify - Primary.csv";
+        //private const string FileToRead = @"C:\Users\Jamjar\Downloads\CombinedStreamer-Vault Verify - Primary.csv";
         //private const string FileToRead = @"C:\Users\Jamjar\Downloads\MergeData.csv";
-        
+        private const string FileToRead = @"C:\Users\Jamjar\Downloads\Copy of HOME_STRETCH_MASTER_FILE_1-17-2020_1115ET - HOME_STRETCH_MASTER_FILE_1-17-2020_1115ET.csv";
+
         List<string> invalidStatus = new List<string> { "Invalid", "Duplicate", "Bad Image", "Tool Only" };
 
         private List<HexTile> m_tiles = new List<HexTile>();
@@ -26,24 +27,34 @@ namespace DestinyMap
         public MainWindow()
         {
             InitializeComponent();
+
+            txtPath.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", "CombinedStreamer-Vault Verify - Primary.csv");
         }
 
         private async void Update_Clicked(object sender, RoutedEventArgs e)
         {
-            if (!File.Exists(txtPath.Text))
+            Update.IsEnabled = false;
+
+            m_tiles.Clear();
+
+            string path = txtPath.Text;
+            //string path = FileToRead;
+
+            if (!File.Exists(path))
             {
                 Output.Text = "Invalid Path!";
+                Update.IsEnabled = true;
                 return;
             }
             
             m_sb.Clear();
             Output.Text = "";
 
-            string path = txtPath.Text;
-
             await Task.Run(() => Run(path));
 
             Output.Text = m_sb.ToString();
+
+            Update.IsEnabled = true;
         }
 
         private void Run(string path)
@@ -102,7 +113,7 @@ namespace DestinyMap
             tiles.ForEach(test => tiles.ForEach(t => Check(t, test)));
 
             // Delete any force deletes.
-            tiles.RemoveAll(t => t.ForceDelete);
+            //tiles.RemoveAll(t => t.ForceDelete);
 
             // Now remove the dupes.
             IEnumerable<HexTile> dupes = tiles.Where(t => t.DupeWith > 0).ToList();
@@ -117,6 +128,7 @@ namespace DestinyMap
                 tiles.Remove(dupe);
             }
 
+            // Merging
             //using (TextWriter writer = new StreamWriter("Merge.csv"))
             //{
             //    CsvHelper.Configuration.CsvConfiguration conf = new CsvHelper.Configuration.CsvConfiguration(new System.Globalization.CultureInfo("en-US"));
@@ -124,9 +136,24 @@ namespace DestinyMap
 
             //    using (CsvWriter csv = new CsvWriter(writer, conf))
             //    {
-            //        foreach (HexTile tile in nonDupes)
+            //        foreach (HexTile tile in tiles)
             //        {
             //            csv.WriteRecord(new HexTileForMerge(tile));
+            //            csv.NextRecord();
+            //        }
+            //    }
+            //}
+
+            //using (TextWriter writer = new StreamWriter("Merge(1).csv"))
+            //{
+            //    CsvHelper.Configuration.CsvConfiguration conf = new CsvHelper.Configuration.CsvConfiguration(new System.Globalization.CultureInfo("en-US"));
+            //    conf.RegisterClassMap<HexTileMap>();
+
+            //    using (CsvWriter csv = new CsvWriter(writer, conf))
+            //    {
+            //        foreach (HexTile tile in tiles)
+            //        {
+            //            csv.WriteRecord(new HexTileForMerge(tile, false));
             //            csv.NextRecord();
             //        }
             //    }
